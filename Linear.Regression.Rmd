@@ -1,0 +1,228 @@
+---
+title: "CS 422 Homework 3"
+author: "George Tapia (A20450857)"
+date: "2023-02-12"
+output:
+  html_document:
+    toc: yes
+    df_print: paged
+  html_notebook:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+### Part 2.1
+```{r}
+#install.packages('ISRL')
+
+#Here, we are splitting the data set into two parts, one is the training set, the other is the test set
+#We generally split our data set into two parts so that we can train our model on the greater portion,
+#and evaluate its performance on the test data set (the smaller portion)
+#Some recommended splits for large data sets are 90/10 and 95/5
+#Some recommended splits for small data sets are 70/30 and 80/20
+library(ISLR) 
+set.seed(1122)
+index <- sample(1:nrow(Auto), 0.95*dim(Auto)[1])
+train.df <- Auto[index,]
+test.df <- Auto[-index,]
+```
+### Part 2.1-A
+```{r}
+library(psych)
+#library(lessR)
+
+#creating a model using all predictors except name
+#Dependent variable -> mpg
+#Independent variables -> cylinders, displacement, horsepower, weight, acceleration, year, origin
+#Function reads as "generate a linear regression model using mpg as the dependent/response variable and 
+#all other variables in the data set as predictors except name"
+linear_regression_model <- lm(mpg ~ . - name, data = train.df)
+print(linear_regression_model)
+
+
+# ^         y-intercept
+# Y = -16.59821 + -0.52348(cylinders) + 0.02042(displacement) + -0.01750(horsepower) + -0.00642(weight) + 0.08742(acceleration) + 0.73827(year) + 1.51602(origin)
+
+
+auto_subset <- subset(Auto, select=-name)
+correlation_matrix <- cor(auto_subset, Auto$mpg)
+
+cor.plot(auto_subset)
+plot(Auto$mpg, Auto$name, ylab = 'name', xlab = 'mpg', col='red')
+
+
+# plot(linear_regression_model)
+
+```
+### Part 2.1-I
+#### Why is using name as a predictor not a reasonable thing to do? Using the name predictor is not a reasonable thing to do since the name will not provide any useful information for our model. The name attribute is unique so we can't generate any useful pattern from it. The variables that are likely to contribute to our model will be the other values given that we can derive a pattern from them, and they all have some sort of relationship to the mpg(correlation plot shows it). Also, if we look at the scatter plot between name and mpg, we can see that this is a noisy graph, there is no relationship between name and mpg.
+
+### Part 2-II
+```{r}
+print(summary(linear_regression_model))
+
+boxplot(linear_regression_model$residuals,
+        col ='pink',
+        border = 'brown',
+        ylim= c(-15,15),
+        main = "Residuals box plot", ylab = "residual amounts",
+        labels = c("1st Quarter: X", "Median: Y", "3rd Quarter: Z"))
+
+#min -> minimum amount that y hat deviates from the actual y is -9.680 below the actual mpg
+#1Q -> 25% of the residuals are below -2.179
+#median -> 50% of the residuals are below -0.098
+#3Q -> 75% of the residuals are below 1.918
+#max -> the maximum amount that y hat deviates from the actual y is 13.036 over the actual mpg
+
+#number of predictors
+p <- 7
+#number of observations
+n <- nrow(train.df)
+
+#hint was definitely taken into account
+R_squared <- summary(linear_regression_model)$r.squared
+Adj_R_squared <- summary(linear_regression_model)$adj.r.squared
+
+RSS <- sum(resid(linear_regression_model)^2)
+RSE <- sqrt(RSS/(n-p-1))
+RMSE <- sqrt(RSS/n)
+mean_mpg <- mean(Auto$mpg)
+percentage_error = round(RSE/mean_mpg * 100, 2)
+
+
+cat("R-sq value is", round(R_squared, 2), "\n",
+    "Adjusted R-sq value is", round(Adj_R_squared, 2), "\n",
+    "RSE is", round(RSE, 2), "\n",
+    "RMSE is", round(RMSE, 2), "\n",
+    "Percentage error of RSE is", paste0(percentage_error, "%"), "\n\n")
+
+cat("All the confidence intervals below, we are 95% confident each of the predictors slope is within each range specified", '\n')
+confint(linear_regression_model, conf.level=0.95)
+```
+#### Since the adjusted R^2 value is close to one (R^2=0.81), this means that roughly 81% of the variance is accounted for by the model. Roughly 19% cannot be explained by the model, which is a relatively small amount. In terms of RSE and RSME, these pretty much tell us a similar thing. The RSE tells us the average amount that the models predictions deviate from the mpg values, while the RSME tells us the average magnitude of the errors. Since, the percentage error relative to the mean mpg is small (14%), this is a small margin of error, and thus, still a good model, in terms of all the variables(R^2, RSE, RSME) values.
+### Part 2-III
+```{r}
+plot(linear_regression_model$residuals, ylab = "Residuals", main = "Scatter plot of Residuals", col = 'blue')
+```
+### Part 2-IV
+```{r}
+library(nortest)
+hist(linear_regression_model$residuals, freq = TRUE, xlab = "Range", main = "Histogram of the Residuals", breaks = 80, col = 'pink')
+
+residuals <- residuals(linear_regression_model)
+shapiro_test <- shapiro.test(residuals)
+print(shapiro_test)
+
+anderson_test <- ad.test(residuals)
+print(anderson_test)
+
+```
+#### It was hard to tell if this histogram follows a Gaussian distribution. From taking a glance at the graph, I would say it is not, due to the fact that by definition "it has to have one peak, and has to be symmetrical around the mean". In this case, it is not symmetrical around the mean. I did a further analysis by performing a Shapiro-Wilk test, and an Anderson-Darling test, which both test the distribution. It was confirmed that this graph DOES NOT follow a Gaussian distribution. They are lower than the significance level of 0.05. (failed tests)
+
+
+### Part 2.1-B
+```{r}
+#Using the regression model you have created in (a), your aim is to narrow down the features to the 3 attributes will act as the best predictors for regressing on mpg.
+```
+
+### Part 2.1-I
+```{r}
+# The predictors with the smallest p-values are year, origin, and displacement. These three predictors have p-values less than 0.05, which suggests that they are good predictors for the response variable mpg.
+linear_regression_model_2 <- lm(mpg ~ year + origin + displacement, data = train.df)
+```
+
+
+### Part 2.1-II
+```{r}
+print(summary(linear_regression_model_2))
+
+#number of predictors
+p <- 3
+#number of observations
+n <- nrow(train.df)
+
+#hint was definitely taken into account
+R_squared <- summary(linear_regression_model_2)$r.squared
+Adj_R_squared <- summary(linear_regression_model_2)$adj.r.squared
+
+RSS <- sum(resid(linear_regression_model_2)^2)
+RSE <- sqrt(RSS/(n-p-1))
+RMSE <- sqrt(RSS/n)
+mean_mpg <- mean(Auto$mpg)
+percentage_error = round(RSE/mean_mpg * 100, 2)
+
+cat("R-sq value is", round(R_squared, 2), "\n",
+    "Adjusted R-sq value is", round(Adj_R_squared, 2), "\n",
+    "RSE is", round(RSE, 2), "\n",
+    "RMSE is", round(RMSE, 2), "\n",
+    "Percentage error of RSE is", paste0(percentage_error, "%"), "\n")
+
+```
+#### Since the adjusted R^2 value is (R^2=0.75), this means that roughly 75% of the variance is accounted for by the model. Roughly 25% cannot be explained by the model, which is a small amount. In terms of RSE and RSME, these pretty much tell us a similar thing. The RSE tells us the average amount that the models predictions deviate from the mpg values, while the RSME tells us the average magnitude of the errors. Since, the percentage error relative to the mean mpg is small (16.72%), this is a small margin of error, and thus, still a good model, in terms of all the variables(R^2, RSE, RSME) values. Though, the other model is slighly better since it has a lower percentage error, and more of the variance is accounted for.
+
+### Part 2.1-III
+```{r}
+plot(linear_regression_model_2$residuals, ylab = "Residuals", main = "Scatter plot of Residuals", col = 'red')
+
+```
+### Part 2.1-IV
+```{r}
+library(nortest)
+hist(linear_regression_model_2$residuals, freq = TRUE, xlab = "Range", main = "Histogram of the Residuals", breaks = 80, col = 'pink')
+
+residuals <- residuals(linear_regression_model_2)
+shapiro_test <- shapiro.test(residuals)
+print(shapiro_test)
+
+anderson_test <- ad.test(residuals)
+print(anderson_test)
+
+```
+#### It was a little more easier to tell that this one does not. From taking a glance at the graph, I would say it is not, due to the fact that by definition "it has to have one peak, and has to be symmetrical around the mean". In this case, it is not symmetrical around the mean.... I did a further analysis by performing a Shapiro-Wilk test, and an Anderson-Darling test, which both test the distribution. It was confirmed that this graph DOES NOT follow a Gaussian distribution. They are lower than the significance level of 0.05. (fails tests)
+
+### Part 2.1-V
+#Comparing the summaries of the model produced in (a) and in (b), including residual analysis of each model. Which model do you think is better, and why? I believe the model in part(a) is way better, since it has a lower R^2 value, meaning that a higher percentage of the variance is accounted for by the model, and the RSE and RSME is lower, which means that the average amount of predictions deviate much less from the mpg than in model(b). In terms of  residual analysis, model(a) seems to be more closer to a Gaussian distribution than model(b) since it is more symmetrical. This makes it slightly better in terms of residual analysis.
+
+
+### Part 2.1-C
+```{r}
+confidence_data <- predict(linear_regression_model_2, newdata = test.df, interval = "confidence")
+confidence_data_frame <- data.frame(prediction = confidence_data[,1], 
+                                    response = test.df$mpg,
+                                    lower = confidence_data[,2],
+                                    upper = confidence_data[,3])
+
+matches_c <- apply(confidence_data_frame, 1, function(x) x[2] > x[3] && x[2] < x[4])
+confidence_data_frame$match <- as.integer(as.logical(matches_c))
+print(confidence_data_frame)
+```
+### Part 2.1-D
+```{r}
+matches_c <- sum(confidence_data_frame$match, na.rm = FALSE)
+cat("Total observations correctly predicted:",matches_c)
+
+```
+### Part 2-E
+```{r}
+prediction_data <- predict(linear_regression_model_2, newdata = test.df, interval = "prediction")
+prediction_data_frame <- data.frame(prediction = prediction_data[,1], 
+                                    response = test.df$mpg,
+                                    lower = prediction_data[,2],
+                                    upper = prediction_data[,3])
+
+matches_p <- apply(prediction_data_frame, 1, function(x) x[2] > x[3] && x[2] < x[4])
+prediction_data_frame$match <- as.integer(as.logical(matches_p))
+print(prediction_data_frame)
+matches_p <- sum(prediction_data_frame$match, na.rm = FALSE)
+cat("Total observations correctly predicted:",matches_p)
+```
+### Part 2.1-F
+```{r}
+#### (i) e came out with more matches
+#### (ii) e came out with more matches because the prediction interval is generally wider than a confidence interval since it accounts for the extra uncertainty associated with predicting a new observation rather than estimating the population parameter.
+```
