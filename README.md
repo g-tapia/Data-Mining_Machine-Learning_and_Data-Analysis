@@ -1,6 +1,6 @@
 # Data-Mining---Artificial-Intelligence
 
-Note: Rmd files contain the code, html files contain the output of the code and the notes. There are 9 labs I worked on, so far I put two, will upload the rest throughout this week.
+Note: Rmd files contain the code, html files contain the output of the code and the notes. There are 9 labs I worked on. So far, I uploaded two, will upload the rest throughout this week.
 
 # Data Analysis of Advertising Dataset
 
