@@ -27,6 +27,7 @@ By analyzing the advertising dataset, I got hands-on experience manipulating, vi
 In this assignment, I engaged in understanding and applying concepts related to Multivariate Linear Regression. 
 
 Here is a picture of my notes, explaining linear regression, in case you need a refresher, or curious to have a basic understanding.
+
 <img width="595" alt="image" src="https://github.com/g-tapia/Data-Mining---Artificial-Intelligence/assets/78235399/5484667f-b150-4929-b1ee-a26a5acd66e1">
 
 ## What I learned
