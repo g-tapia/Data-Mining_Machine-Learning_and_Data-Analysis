@@ -1,0 +1,174 @@
+---
+title: "CS 422 Homework 2"
+author: "George Tapia (A20450857)"
+date: "2023-01-30"
+#keep the bottom three lines for homeworks in the future
+output:
+  html_notebook:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Part 2-A
+```{r}
+#Reading the Advertising csv file into a dataframe
+setwd("C:/Users/gtapi/OneDrive/Documents/R_Files")
+advertising_data_frame <- read.csv('Advertising.csv')
+print(advertising_data_frame)
+```
+### Part 2-B
+```{r}
+#Printing rows 1 to 20; columns 1,2 and 3
+rows = advertising_data_frame[1:20,]
+print(rows)
+
+#Columns 1, 2 and 3 of 20 rows extracted
+columns.1to3 = rows[, 1:3]
+print(columns.1to3)
+
+#Columns 1, 2 and 3 of the whole data set
+columns.1to3 = advertising_data_frame[,1:3]
+print(columns.1to3)
+```
+### Part 2-C
+```{r}
+#Printing columns 1 and 4 for all rows
+columns.1and4 <- advertising_data_frame[,c(1,4)]
+print(columns.1and4)
+```
+### Part 2-D
+```{r}
+#Scatter plot of sales and radio
+plot(advertising_data_frame$sales, advertising_data_frame$radio, 
+               main = "Scatter Plot of the Advertising data set", 
+               xlab= "Sales (x1000)", ylab= "Radio advertising (thousands of $)", 
+               pch=1, col = c('purple'))
+```
+### Part 2-E
+```{r}
+#Scatter plot of sales and newspaper
+plot(advertising_data_frame$sales, advertising_data_frame$newspaper, 
+     main = "Scatter Plot of the Advertising data set", 
+     xlab= "Sales (x1000)", ylab= "Newspaper advertising (thousands of $)", 
+     pch=1, col = c('blue'))
+```
+### Part 2-F
+```{r}
+#Scatter plot of sales and TV
+plot(advertising_data_frame$sales, advertising_data_frame$TV, 
+                   main = "Scatter Plot of the Advertising data set", 
+                   xlab= "Sales (x1000)", ylab= "TV advertising (thousands of $)", 
+                   pch=1, col = c('black'))
+
+```
+### Part 2-G
+```{r}
+
+# answer to question below
+# ------------------------
+#
+#(G) After analyzing the correlation of the three plots below, it can be determined that the newspaper plot is the noisiest since it has the closest correlation value to 0, meaning the points are more spread out(have a lesser non linear relationship) and it is harder to spot any trend. On the other hand, the other two plots have a greater linear relationship as their correlation values are closer to 1, indicating that they are less spread out.
+
+#references:
+#intro to data mining 2ed, correlation section, figure 2.17.
+
+
+
+correlation_radio_sales <- cor(advertising_data_frame$radio, advertising_data_frame$sales)
+correlation_newspaper_sales <- cor(advertising_data_frame$newspaper, advertising_data_frame$sales)
+correlation_tv_sales <- cor(advertising_data_frame$TV, advertising_data_frame$sales)
+
+plot(c(correlation_tv_sales, correlation_radio_sales, correlation_newspaper_sales), 
+       type = "l", 
+       xlab = "Advertising budgets", 
+       xaxt= 'n',
+       ylab = "Correlation to Sales",
+       ylim = c(-1,1), 
+       main = "Correlation Distribution")
+
+text(2, correlation_radio_sales, round(correlation_radio_sales,2), col = 'purple')
+text(3, correlation_newspaper_sales, round(correlation_newspaper_sales,2), col = 'blue')
+text(1, correlation_tv_sales, round(correlation_tv_sales,2), col = 'black')
+
+axis(1, at = c(1,2,3), labels = c("TV", "Radio", "Newspaper"))
+```
+### Part 2-H
+```{r}
+
+# install.packages("psych") 
+# library(psych)
+# 
+# answer to questions
+# ------------------------
+# (a) TV has the highest positive correlation with sales
+# (b) Newspaper has the most negative correlation with sales
+
+cor.plot(advertising_data_frame)
+```
+### Part 2-I
+```{r}
+# answer to question
+# ------------------
+#(I) Looking at the box plots of newspaper and radio, we can see that newspaper has a wider range in terms of budget distribution(meaning that the budget has a greater spread in terms of spending), and a greater median (separator of 50% the budget distributions). We can also see that in the first quartile, the newspaper budget distribution was slightly higher than radio, but in the 3rd quartile it grew higher, and even way more in the 4th quartile.
+
+
+boxplot(advertising_data_frame$TV,
+        advertising_data_frame$radio, 
+        advertising_data_frame$newspaper,
+        col =(c('black', 'purple', 'blue')),
+        border = 'brown',
+        ylim= c(0,220),
+        main = "Advertising Budget Spenditure", xlab = "Advertising Options", ylab = "Advertising Budget",
+        names = c("TV", "Radio", "Newspaper"),
+        labels = c("1st Quarter: X", "Median: Y", "3rd Quarter: Z"))
+
+quartiles_radio = quantile(advertising_data_frame$radio)
+quartiles_newspaper = quantile(advertising_data_frame$newspaper)
+print(quartiles_radio)
+print('-------------------------------')
+print(quartiles_newspaper)
+
+```
+### Part 2-J
+```{r}
+total <- rowSums(advertising_data_frame[, c("TV", "radio", "newspaper")])
+advertising_data_frame$total <- total
+library(dplyr)
+ten_rows <- advertising_data_frame %>% head(10)
+
+print(ten_rows)
+```
+### Part 2-K
+```{r}
+minimum_400k <- advertising_data_frame %>% filter(total >=400)
+print(minimum_400k)
+```
+### Part 2-L
+```{r}
+max_sales <- max(advertising_data_frame$sales)
+max_index <- which(advertising_data_frame$sales == max_sales)
+advertising_data_frame[max_index,]
+```
+### Part 2-M
+```{r}
+#Answer to question
+#
+#If we take a look at the percentages of each of the advertisement expenditures to the total spent, we can start to notice a pattern. It seems that when we spend roughly 75% on advertising on TV, and half of the remaining 25% on newspaper(roughly 12.5%) and radio(12.5%), we begin to notice a higher shift in sales. Ultimately, TV seems to be contributing the most amount of money in sales with a equal amount in radio and newspaper budget expenditure. It is evident that when we spend more in total, the sales increase. However, the ratio of distribution of budget does play a role in the outcome of sales.
+
+#If we look at row 2 below, notice that the percentage of expenditure is roughly the same for all, but the sales are not as great.
+
+#Now, if we look at row 1, the newspaper expenditure increased more, and tv/radio decreased. Though, the sales were good, they were better when newspaper and radio were roughly the same, and tv expenditure was at roughly 75%.
+
+
+
+
+eleven_rows_comparison <- rbind(ten_rows,advertising_data_frame[max_index,])
+percentage <- eleven_rows_comparison %>% mutate(tv_percent = round(eleven_rows_comparison$TV/ eleven_rows_comparison$total * 100),
+                                        radio_percent = round(eleven_rows_comparison$radio / eleven_rows_comparison$total * 100),
+                                        newspaper_percent = round(eleven_rows_comparison$newspaper / eleven_rows_comparison$total * 100))
+print(percentage[,c(4:5, 6:8)])
+```
