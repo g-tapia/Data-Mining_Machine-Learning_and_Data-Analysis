@@ -1,0 +1,349 @@
+---
+title: "CS 422 Homework 4"
+author: "George Tapia (A20450857)"
+date: "2023-03-04"
+output:
+  html_document:
+    toc: yes
+    df_print: paged
+  html_notebook:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+##### Section 2.1
+
+### Part A
+```{r}
+setwd("C:/Users/gtapi/OneDrive/Documents/R_Files")
+hotel_bookings <- read.csv("hotel_bookings.csv")
+
+table(hotel_bookings$hotel)
+```
+### Part B
+```{r}
+class_frequency <- table(hotel_bookings$is_canceled)
+
+# retrieving number of canceled customers
+canceled_count <- class_frequency[["1"]]
+
+# retrieving number of non canceled customers
+not_canceled_count <- class_frequency[["0"]]
+
+cat("Number of guests who canceled reservation:", canceled_count, "\n",
+    "Number of guests who did not cancel the reservation:", not_canceled_count)
+```
+### Part C
+```{r}
+customer_type_frequency <- table(hotel_bookings$customer_type)
+
+
+# returning the index of the max number of customers for the most number of reservations
+max_index <- which.max(customer_type_frequency)
+
+# grabbing the customer type
+most_common_customer_type <- names(customer_type_frequency)[max_index]
+
+# grabbing the number of reservations from the frequency table
+number_of_reservations <- customer_type_frequency[max_index]
+
+output_string <- paste("Customer type with the most reservations is", most_common_customer_type, ", with", 
+                       number_of_reservations, "reservations")
+print(output_string)
+```
+### Part D
+```{r}
+
+parking_space_frequency <- table(hotel_bookings$required_car_parking_spaces)
+
+# take the attributes(required number of parking spaces) and turn it into a vector
+required_parking_spaces <- as.numeric(names(parking_space_frequency))
+
+# iterate through the vector, and retrieve the max number of required parking spaces
+max_number_of_required_spaces <- max(required_parking_spaces)
+
+# iterate through the vector and grab the index of the minimum required of parking spaces
+max_required_parking_spaces_index <- which.max(required_parking_spaces)
+
+# grab the number of customers who requested the max number of parking spaces from the frequency table
+number_of_customers_with_max_spaces <-parking_space_frequency[max_required_parking_spaces_index]
+
+
+output_string <- paste(number_of_customers_with_max_spaces, " customers required the most number of parking spaces (", max_number_of_required_spaces, ").", sep = "")
+
+print(output_string)
+
+matching_rows <- hotel_bookings[hotel_bookings$required_car_parking_spaces == max_number_of_required_spaces, ]
+print(matching_rows)
+```
+### Part E
+```{r}
+parking_space_frequency <- table(hotel_bookings$required_car_parking_spaces)
+
+# take the attributes (required number of parking spaces) and turn it into a vector
+required_parking_spaces <- as.numeric(names(parking_space_frequency))
+
+# iterate through the vector, and retrieve the minimum number of required parking spaces
+min_number_of_required_spaces <- min(required_parking_spaces)
+
+# iterate through the vector and grab the index of the minimum required of parking spaces
+min_required_parking_spaces_index <- which.min(required_parking_spaces)
+
+# grab the number of customers who requested the min number of parking spaces from the frequency table
+number_of_customers_with_min_spaces <-parking_space_frequency[min_required_parking_spaces_index]
+
+
+output_string <- paste(number_of_customers_with_min_spaces, " customers required the least number of parking spaces (", min_number_of_required_spaces, ").", sep = "")
+
+print(output_string)
+
+#matching_rows <- hotel_bookings[hotel_bookings$required_car_parking_spaces == min_number_of_required_spaces, ]
+#print(matching_rows)
+
+```
+### Part F
+```{r}
+# count the number of people who expressed a preference for a room type during reservation
+# using the is.na function to count the number of cells that contain a value
+
+#num_null <- sum(is.na(hotel_bookings$reserved_room_type))
+num_preferred <- sum(!is.na(hotel_bookings$reserved_room_type))
+
+# count the number of people who were assigned their preferred room type during check-in
+# the equality function returns a vector of true and false values
+# the sum function returns the sum of the true values only
+num_assigned_pref <- sum(hotel_bookings$assigned_room_type == hotel_bookings$reserved_room_type)
+
+# calculate the percentage of people who were assigned their preferred room type
+percentage <- 100 * num_assigned_pref / num_preferred
+
+cat(sprintf("%.2f%% of the people who expressed a room preference during reservation got the room during check-in.", percentage))
+
+```
+```{r}
+# create separate data frames for city and resort hotels
+# create a subset where hotel attribute equals type of hotel
+city_hotels <- subset(hotel_bookings, hotel == "City Hotel")
+resort_hotels <- subset(hotel_bookings, hotel == "Resort Hotel")
+
+top_10_city_hotel_countries <- head(sort(table(city_hotels$country), decreasing = TRUE), 10)
+
+# noticed a NULL value here (anamoly)
+top_11_resort_hotel_countries <- head(sort(table(resort_hotels$country), decreasing = TRUE), 11)
+
+# removing the NULL value from the 11 resort hotel countries to make it 10
+if("NULL" %in% names(top_11_resort_hotel_countries)){
+  top_10_resort_hotel_countries <- top_11_resort_hotel_countries[names(top_11_resort_hotel_countries) != "NULL"]
+}
+
+barplot(sort(top_10_city_hotel_countries, increasing = TRUE), 
+        col = rainbow(10),
+        ylim = c(0, 9000),
+        main = "Top 10 Countries of Origin for City Hotels")
+
+barplot(sort(top_10_resort_hotel_countries, increasing = TRUE), 
+        col = rainbow(10),
+        ylim = c(0, 7000),
+        main = "Top 10 Countries of Origin for Resort Hotels")
+
+
+most_visitors <- names(which.max(table(hotel_bookings$country)))
+cat("The country with the most visitors is", most_visitors, "\n")
+```
+###### Section 2.2 (Part A)
+
+### Cleaning the data (combining arrival day, month, and year into one column. Then generating a table to see where all the null values are at)
+```{r}
+set.seed(1122)
+
+
+# Load the required packages
+library(xgboost)
+
+# the first thing that we need to do is clean the data
+# we can minimize the number of columns by combining the arrival month, day, and year into a single column
+# I will first change the values of the arrival months to a numeric format so I can have the concatenation match the reservation date status
+month_names <- c("January" = "01", "February" = "02", "March"="03", "April"="04", "May"="05", "June"="06",
+                 "July"="07", "August"="08", "September"="09", "October"="10", "November"="11", "December"="12")
+
+# just adding the leading zeros to generate a date format like the reservation status date
+hotel_bookings$arrival_date_month <- month_names[hotel_bookings$arrival_date_month]
+hotel_bookings$arrival_date_day_of_month <- sprintf("%02d", hotel_bookings$arrival_date_day_of_month)
+
+# combining the values to form the single column
+arrival_date <- paste(hotel_bookings$arrival_date_year, hotel_bookings$arrival_date_month, hotel_bookings$arrival_date_day_of_month, sep ="-")
+
+hotel_bookings$arrival_date <- arrival_date
+hotel_bookings$arrival_date_year <- NULL
+hotel_bookings$arrival_date_month <- NULL
+hotel_bookings$arrival_date_day_of_month <- NULL
+
+# taking the strings and creating date objects out of them so we can perform comparison operations
+hotel_bookings$reservation_status_date <- as.Date(hotel_bookings$reservation_status_date)
+hotel_bookings$arrival_date <- as.Date(hotel_bookings$arrival_date)
+
+
+check_values <- c("Undefined", "undefined", "NULL", "", NA)
+
+# finding the sum of missing values for each column
+missing_values <- sapply(hotel_bookings, function (x) sum(x %in% check_values))
+missing_percentages <- sapply(hotel_bookings, function (x) mean(x %in% check_values) * 100)
+
+# displaying the tables of missing values
+knitr::kable(missing_values, align = "c")
+knitr::kable(missing_percentages, align = "c")
+
+```
+
+### Children column adjusted
+```{r}
+# taking care of the missing children columns first
+missing_children_indices <- which(is.na(hotel_bookings$children))
+
+# taking the mean of the children so that I can fill in the missing values with the mean value
+# taking this approach since it is a very small amount of missing values
+mean_of_children <- as.integer(floor(mean(hotel_bookings$children, na.rm = TRUE)))
+
+# filling in the missing values with the mean value
+hotel_bookings[missing_children_indices,]$children <- mean_of_children
+```
+
+
+### Meal missing values adjusted
+```{r}
+# reference https://stackoverflow.com/questions/2547402/how-to-find-the-statistical-mode
+find_mode <- function(x) {
+  u <- unique(x)
+  tab <- tabulate(match(x, u))
+  u[tab == max(tab)]
+}
+#---------------------------------------------------------------------------------------
+
+missing_meal_indices <- which(hotel_bookings$meal == "Undefined")
+mode_of_meals <- find_mode(hotel_bookings$meal)
+hotel_bookings[missing_meal_indices,]$meal <- mode_of_meals
+```
+
+### Country missing values adjusted
+```{r}
+missing_country_indices <- which(hotel_bookings$country == "NULL")
+mode_of_country <- find_mode(hotel_bookings$country)
+hotel_bookings[missing_country_indices,]$country <- mode_of_country
+```
+
+### Market segment missing values adjusted
+```{r}
+missing_market_indices <- which(hotel_bookings$market_segment == "Undefined")
+mode_of_market <-find_mode(hotel_bookings$market_segment)
+hotel_bookings[missing_market_indices,]$market_segment <- mode_of_market
+```
+
+### Distribution channel missing values adjusted
+```{r}
+missing_distribution_indices <- which(hotel_bookings$distribution_channel == "Undefined")
+mode_of_distribution <- find_mode(hotel_bookings$distribution_channel)
+hotel_bookings[missing_distribution_indices,]$distribution_channel <- mode_of_distribution
+```
+
+### Agent missing values adjustment by mode of each country
+```{r}
+# grabbing the rows that have null for agent to see if there is a pattern
+null_agent_indices<- which(hotel_bookings$agent == "NULL")
+
+# changing all the string values in the agent column to integer values
+hotel_bookings$agent <- as.integer(hotel_bookings$agent)
+
+list_of_agents <- sort(unique(hotel_bookings[-null_agent_indices,]$agent), decreasing = TRUE)
+agent_by_country <- aggregate(agent ~ country, data = hotel_bookings[-null_agent_indices,] , find_mode)
+
+# extract the specific agent value for each country
+agent_by_country$agent <- sapply(agent_by_country$agent, function(x) {
+  if (length(x) == 1) {
+    return(x[1])
+  } else {
+    return(sample(x, 1))
+  }
+})
+
+# get indices of null agent values in hotel_bookings
+null_agent_indices <- which(is.na(hotel_bookings$agent))
+
+# iterate over rows with null agent values and fill in corresponding agent from agent_by_country
+for (i in null_agent_indices) {
+  matching_row <- which(agent_by_country$country == hotel_bookings[i, "country"])
+  if (length(matching_row) > 0) {
+    hotel_bookings[i, "agent"] <- as.integer(agent_by_country[matching_row, "agent"])
+  }
+  else{
+    hotel_bookings[i, "agent"] <- as.integer(9)
+  }
+}
+
+```
+### Company column and arrival_date_week_number removed
+```{r}
+# since the company column has more than 70% of missing values, I will be removing it from the data set
+# I will also remove the arrival date week number column since it is of no use, we have the arrival date already
+hotel_bookings$company <- NULL
+hotel_bookings$arrival_date_week_number <- NULL
+```
+
+
+### Data is finally clean, and ready to be processed
+```{r}
+check_values <- c("Undefined", "undefined", "NULL", "", NA)
+
+# finding the sum of missing values for each column
+missing_values <- sapply(hotel_bookings, function (x) sum(x %in% check_values))
+missing_percentages <- sapply(hotel_bookings, function (x) mean(x %in% check_values) * 100)
+
+# displaying the tables of missing values
+knitr::kable(missing_values, align = "c")
+knitr::kable(missing_percentages, align = "c")
+```
+### Splitting the data into test and training sets (set.seed was used in data cleaning phase)
+```{r}
+
+# Split the data into training and test sets
+n_obs <- nrow(hotel_bookings)
+train_idx <- sample(n_obs, 0.9 * n_obs)
+train <- hotel_bookings[train_idx, ]
+test <- hotel_bookings[-train_idx, ]
+
+```
+
+```{r}
+library(rpart)
+library(rpart.plot)
+model <- rpart(is_canceled ~ deposit_type + previous_cancellations + arrival_date, method = "class", data = train)
+
+rpart.plot(model, extra = 104, fallen.leaves = T, type = 4,
+           main = "Rpart on Hotel data")
+# now we can run our model on the test data set
+pred <- predict(model, test, type = "class")
+# create a table of actual vs predicted classes
+conf_matrix <- table(test$is_canceled, pred)
+
+# print the confusion matrix
+print(conf_matrix)
+
+# calculate accuracy
+accuracy <- sum(diag(conf_matrix)) / sum(conf_matrix)
+cat("Accuracy:", round(accuracy, 4), "\n")
+
+# calculate error rate
+error_rate <- 1 - accuracy
+cat("Error rate:", round(error_rate, 4), "\n")
+
+# calculate sensitivity
+sensitivity <- conf_matrix[2, 2] / sum(conf_matrix[2, ])
+cat("Sensitivity:", round(sensitivity, 4), "\n")
+
+# calculate specificity
+specificity <- conf_matrix[1, 1] / sum(conf_matrix[1, ])
+cat("Specificity:", round(specificity, 4), "\n")
+
+```
