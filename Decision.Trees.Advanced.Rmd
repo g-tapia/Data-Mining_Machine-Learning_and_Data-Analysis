@@ -1,0 +1,218 @@
+---
+title: "Homework 5"
+author: "George Tapia (A20450857)"
+date: "2023-03-08"
+output:
+  html_document:
+    toc: yes
+    df_print: paged
+  html_notebook:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(rpart)
+library(rpart.plot)
+library(caret)
+```
+
+### Part 2.1(a)
+```{r}
+
+setwd("C:/Users/gtapi/OneDrive/Documents/R_Files")
+
+working_directory <- getwd()
+setwd(working_directory)
+
+test <- read.csv('adult-test.csv', header = TRUE, sep = ",")
+train <- read.csv('adult-train.csv', header = TRUE, sep = ",")
+
+
+test <- test[test$age != '?' & 
+             test$workclass != '?' &
+             test$fnlwgt != '?' &
+             test$education != '?' &
+             test$education_num != '?' &
+             test$marital_status != '?' &
+             test$occupation != '?' &
+             test$relationship != '?' &
+             test$race != '?' &
+             test$sex != '?' &
+             test$capital_gain != '?' &
+             test$capital_loss != '?' &
+             test$hours_per_week != '?' &
+             test$native_country != '?' &
+             test$income != '?', ]
+
+train <- train[train$age != '?' & 
+             train$workclass != '?' &
+             train$fnlwgt != '?' &
+             train$education != '?' &
+             train$education_num != '?' &
+             train$marital_status != '?' &
+             train$occupation != '?' &
+             train$relationship != '?' &
+             train$race != '?' &
+             train$sex != '?' &
+             train$capital_gain != '?' &
+             train$capital_loss != '?' &
+             train$hours_per_week != '?' &
+             train$native_country != '?' &
+             train$income != '?', ]
+
+
+print(dim(test))
+print(dim(train))
+```
+### Part 2.1(b)
+```{r}
+set.seed(1122)
+model <- rpart(income ~ . , data = train, method = "class")
+
+rpart.plot(model, extra=104, fallen.leaves=T, type=4, main="1994 US Census Database Decision Tree")
+```
+#### (i)  The top three predictors are education, relationship, and capital gain.
+#### (ii) Given the tree, the first split is done on the relationship attribute. The predicted class of the first node is (<=50k). The distribution of observations is 0.75 and 0.25 between the classes at first node.
+
+### Part 2.1(c)
+```{r}
+pred <- predict(model, test, type="class")
+print(confusionMatrix(as.factor(pred), as.factor(test[, 15])))
+
+TP <- 10772
+TN <- 1863
+FN <- 1837
+FP <- 588
+
+sensitivity <- TP / (TP + FN)
+specificity <- TN / (TN + FP)
+balanced_accuracy <- (sensitivity + specificity) / 2
+balanced_error_rate <- 1 - balanced_accuracy
+
+cat(paste(" Sensitivity:", round(sensitivity, 2), "\n"),
+    paste("Specificity:", round(specificity, 2), "\n"),
+    paste("Balanced Accuracy:", round(balanced_accuracy, 2), "\n"),
+    paste("Balanced Error Rate:", round(balanced_error_rate, 2)))
+```
+#### Following are rounded to two decimal places:
+#### Sensitivity: 0.85 
+#### Specificity: 0.76 
+#### Balanced Accuracy: 0.81 
+#### Balanced Error Rate: 0.19
+
+### Part 2.1(c - iv)
+```{r}
+library(ROCR)
+predicted_ROC <- prediction(predict(model, type = "prob")[, 2], train$income)
+
+roc_curve <- performance(predicted_ROC, "tpr", "fpr")
+plot(roc_curve, col="blue", main="ROC Curve", lwd = 2)
+abline(a = 0, b = 1, lwd = 2, col = "red", lty = 2)
+lines(c(0, 0, 1), c(0, 1, 1), lwd = 2, col = "purple")
+
+legend("bottomright", legend = c("Random Classifier", "Perfect Classifier", "Current Classifier"),
+       lty = c(1, 1, 1), lwd = 2, col = c("red", "purple", "blue"))
+
+area_under_the_curve <- performance(predicted_ROC, measure = "auc")
+area_under_the_curve <- area_under_the_curve@y.values[[1]]
+abline(0, 1, lty = 2)
+
+cat("Area Under the Curve: ", area_under_the_curve, "\n")
+```
+#### (iv) the area under the curve is 0.84
+
+
+### Part 2.1(d)
+```{r}
+printcp(model)
+```
+#### The cross validation error (xerror) is used to select the most optimal tree size. In this case, the tree at size 4 is most optimal. Since the last row has the smallest cross validation error, this tree will not benefit from pruning. If we pruned the tree beforehand, the performance will be less efficient.
+
+### Part 2.1(e)(I-II)
+```{r}
+set.seed(1122)
+
+less_or_equal_to_50 <- nrow(train[train$income == '<=50K', ])
+greater_than_50 <- nrow(train[train$income == '>50K', ])
+cat(" Less or equal to 50K: ", less_or_equal_to_50,"\n",
+    "Greater than 50K: ", greater_than_50, "\n")
+
+
+```
+
+### Part 2.1(e)(II)
+```{r}
+train_less_or_equal_to_50 <- train[train$income == '<=50K', ]
+under_sample_train_less_or_equal_to_50 <- train_less_or_equal_to_50[sample(nrow(train_less_or_equal_to_50), greater_than_50, replace = FALSE, prob = NULL), ]
+
+train_greater_than_50 <- train[train$income == '>50K', ]
+cat(" Less or equal to 50K: ",nrow(under_sample_train_less_or_equal_to_50),"\n",
+    "Greater than 50K: ", nrow(train_greater_than_50), "\n")
+balanced_train <- rbind(under_sample_train_less_or_equal_to_50,train_greater_than_50)
+```
+### Part 2.1(e)(III)
+```{r}
+model_2 <- rpart(income ~ . , data = balanced_train, method = "class")
+rpart.plot(model_2, extra=104, fallen.leaves=T, type=4, main="1994 US Census Database Balanced Decision Tree")
+```
+### Part 2.1(e)(III - (I-III))
+```{r}
+pred <- predict(model_2, test, type="class")
+print(confusionMatrix(as.factor(pred), as.factor(test[, 15])))
+
+TP <- 8433
+TN <- 3209
+FN <- 491
+FP <- 2927
+
+sensitivity <- TP / (TP + FN)
+specificity <- TN / (TN + FP)
+balanced_accuracy <- (sensitivity + specificity) / 2
+balanced_error_rate <- 1 - balanced_accuracy
+
+cat(paste(" Sensitivity:", round(sensitivity, 2), "\n"),
+    paste("Specificity:", round(specificity, 2), "\n"),
+    paste("Balanced Accuracy:", round(balanced_accuracy, 2), "\n"),
+    paste("Balanced Error Rate:", round(balanced_error_rate, 2)))
+
+```
+#### Sensitivity: 0.94 
+#### Specificity: 0.52 
+#### Balanced Accuracy: 0.73 
+#### Balanced Error Rate: 0.27
+
+### Part 2.1(e)(III - (IV))
+```{r}
+predicted_ROC <- prediction(predict(model_2, type = "prob")[, 2], balanced_train$income)
+
+roc_curve <- performance(predicted_ROC, "tpr", "fpr")
+plot(roc_curve, col="blue", main="ROC Curve", lwd = 2)
+abline(a = 0, b = 1, lwd = 2, col = "red", lty = 2)
+lines(c(0, 0, 1), c(0, 1, 1), lwd = 2, col = "purple")
+
+legend("bottomright", legend = c("Random Classifier", "Perfect Classifier", "Current Classifier"),
+       lty = c(1, 1, 1), lwd = 2, col = c("red", "purple", "blue"))
+
+area_under_the_curve <- performance(predicted_ROC, measure = "auc")
+area_under_the_curve <- area_under_the_curve@y.values[[1]]
+abline(0, 1, lty = 2)
+
+cat("Area Under the Curve: ", area_under_the_curve, "\n")
+```
+#### Part 2.1(f)
+
+#### First Model:
+#### Sensitivity: 0.85 
+#### Specificity: 0.76 
+#### Balanced Accuracy: 0.81 
+#### Balanced Error Rate: 0.19
+
+#### Second Model:
+#### Sensitivity: 0.94 
+#### Specificity: 0.52 
+#### Balanced Accuracy: 0.73 
+#### Balanced Error Rate: 0.27
+
+#### The first model has a higher balanced accuracy, and specificity, but a lower sensitivity compared to the second model, while the AUC for both models is roughly the same. It seems that balancing the training samples in the second model did not improve the performance, despite making it more equivalent in terms of observations. Additionally, since the test data set was not balanced, this could explain why the balanced accuracy, and specificity was worse.
