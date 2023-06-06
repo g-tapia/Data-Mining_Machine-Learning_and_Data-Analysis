@@ -80,3 +80,22 @@ Building the decision tree model involved thoughtful selection of predictor vari
 The assignment concluded with an interpretation of the model metrics and an application of the model to unseen data (the test set). This gave me practical experience in assessing the quality of a model, predicting outcomes, and validating those predictions.
 
 Overall, this assignment significantly enriched my practical understanding of data mining techniques, particularly exploratory data analysis and decision tree modeling. It was an engaging exercise that bridged the gap between theoretical concepts and their practical applications.
+
+
+# Association Rule Mining (Bakery dataset)
+
+### Theoretical Understanding
+In this assignment, theoretical knowledge was further strengthened by answering questions from Tan's book on Association Analysis and Zaki's chapter on Frequent Pattern Mining. The questions facilitated a deeper understanding of association rules, frequent pattern mining, and the application of these concepts in data mining.
+
+### Hands-on Experience with Association Analysis
+
+### Data Transformation
+The assignment used the 'Extended Bakery' dataset, a real-world dataset representing transactions from a chain of bakery shops. The dataset came in a sparse vector format, with each transaction containing a list of purchased items represented by their product ID code. The first task was to transform this dataset into a more interpretable canonical representation using the mapping provided in the products.csv file. This required translating the product ID codes into actual product names, thereby creating an easy-to-read file for each series of transactions (tr-5k, tr-20k, etc.). This task enhanced my data manipulation skills and provided experience in creating user-friendly datasets.
+
+### Association Rule Mining
+The main part of the assignment involved finding association rules that associate the presence of one set of items with another set, using the arules package in R. This was done for each series of transactions, using varying levels of minimum support and confidence. The output included the frequent itemsets with their support and association rules with the antecedent, consequent, support, and confidence. This exercise gave me valuable experience in using association analysis to mine for frequent itemsets and strong association rules in a dataset.
+
+### Comparison and Interpretation
+The last part of the assignment required comparing the rules obtained for different subsets of transactions and analyzing how the number of transactions impacts the results. Additionally, for the 75,000 transactions dataset, I had to identify the most and least frequently purchased item or itemset. These tasks allowed me to reflect on the influence of data size on results and to draw meaningful insights from the data.
+
+Through these practical tasks, this assignment solidified my understanding of association rule mining and its application in analyzing transaction data. I gained experience in transforming data, using the arules package in R for mining association rules, and interpreting these rules for actionable insights.
