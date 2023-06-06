@@ -82,12 +82,35 @@ The assignment concluded with an interpretation of the model metrics and an appl
 Overall, this assignment significantly enriched my practical understanding of data mining techniques, particularly exploratory data analysis and decision tree modeling. It was an engaging exercise that bridged the gap between theoretical concepts and their practical applications.
 
 
+# Advanced Decision Trees (US Census Dataset)
+
+### Theoretical Understanding
+In this homework, I strengthened my theoretical knowledge by answering questions from Tan's book focusing on different aspects of decision tree algorithms and multiclass classification problems. I practiced calculating sensitivity, specificity, and precision, further enhancing my understanding of these evaluation metrics in machine learning.
+
+### Data Cleaning and Preprocessing
+The assignment involved handling the 1994 US Census datasets, containing several incomplete entries. The initial task required identifying and removing such instances, transforming the dataset into a more reliable form for data mining. This process significantly improved my skills in data preparation, a crucial step before performing any data mining or machine learning tasks.
+
+### Advanced Decision Tree Classification
+The core part of the assignment was the practical application of advanced decision tree classification using R's `rpart` function on the cleaned dataset. The goal was to predict whether a person's income exceeds $50K per year, based on various features such as age, work class, education, and others. This section helped me gain a deeper understanding of decision trees and their applicability in real-world predictive modeling tasks.
+
+### Model Analysis
+After building the decision tree model, I analyzed the model to identify key predictors and understand the initial split in the tree. This analysis provided valuable insights into how decision trees work and how they select features for splits. 
+
+### Model Evaluation
+I evaluated the model's performance using the test dataset and calculated crucial metrics such as balanced accuracy, balanced error rate, sensitivity, specificity, and the Area Under the ROC curve. This step underscored the importance of these evaluation metrics in understanding a model's effectiveness and reliability.
+
+### Addressing Class Imbalance
+The training dataset exhibited a class imbalance problem. I addressed this issue by employing undersampling of the majority class, training a new model, and then comparing its performance with the original model. This step facilitated a better understanding of the impact of class imbalance on a model's performance and how to mitigate it.
+
+### Model Comparison
+Finally, I compared the balanced accuracy, sensitivity, specificity, positive predictive value, and AUC of the two models. This comparison helped me comprehend the effects of class imbalance, and its correction, on the overall performance of predictive models.
+
+Overall, this assignment solidified my understanding of advanced decision trees and their practical application in predicting income based on various demographic and employment-related attributes.
+
 # Association Rule Mining (Bakery dataset)
 
 ### Theoretical Understanding
 In this assignment, theoretical knowledge was further strengthened by answering questions from Tan's book on Association Analysis and Zaki's chapter on Frequent Pattern Mining. The questions facilitated a deeper understanding of association rules, frequent pattern mining, and the application of these concepts in data mining.
-
-### Hands-on Experience with Association Analysis
 
 ### Data Transformation
 The assignment used the 'Extended Bakery' dataset, a real-world dataset representing transactions from a chain of bakery shops. The dataset came in a sparse vector format, with each transaction containing a list of purchased items represented by their product ID code. The first task was to transform this dataset into a more interpretable canonical representation using the mapping provided in the products.csv file. This required translating the product ID codes into actual product names, thereby creating an easy-to-read file for each series of transactions (tr-5k, tr-20k, etc.). This task enhanced my data manipulation skills and provided experience in creating user-friendly datasets.
