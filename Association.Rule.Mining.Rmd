@@ -1,0 +1,97 @@
+---
+title: "Homework 6"
+author: "George Tapia (A20450857)"
+date: "2023-04-03"
+output:
+  html_document:
+    toc: yes
+    df_print: paged
+  html_notebook:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+### Part 2.1(b)
+```{r}
+library(arules)
+
+working_directory <- getwd()
+set_working_directory <- working_directory
+```
+
+### Transactions Equal to 1k (minsup = 0.01, minconf = 0.85)
+```{r}
+tr1k <- read.transactions("tr-1k-canonical.csv", sep = ",")
+frequent_item_sets_tr1k <- apriori(tr1k, parameter = list(support = 0.01, target = "frequent itemsets"))
+rules_for_tr1k <- apriori(tr1k, parameter = list(support = 0.01, conf = 0.85, target = "rules"))
+```
+#### Frequent Itemsets (Tr1k)
+```{r}
+print(inspect(sort(frequent_item_sets_tr1k, decreasing = T, by="count")))
+```
+#### Rules (Tr1k)
+```{r}
+print(inspect(sort(rules_for_tr1k, by="confidence")))
+```
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+### Transactions Equal to 5k (minsup = 0.01, minconf = 0.85)
+```{r}
+tr5k <- read.transactions("tr-5k-canonical.csv", sep = ",")
+frequent_item_sets_tr5k <- apriori(tr5k, parameter = list(support = 0.01, target = "frequent itemsets"))
+rules_for_tr5k <- apriori(tr5k, parameter = list(support = 0.01,conf = 0.85, target = "rules"))
+```
+#### Frequent Itemsets (Tr5k)
+```{r}
+print(inspect(sort(frequent_item_sets_tr5k, decreasing = T, by="count")))
+```
+
+#### Rules (Tr5k)
+```{r}
+print(inspect(sort(rules_for_tr5k, by="confidence")))
+```
+
+### Transactions Equal to 20k (minsup = 0.01, minconf = 0.85)
+```{r}
+tr20k <- read.transactions("tr-20k-canonical.csv", sep = ",")
+frequent_item_sets_tr20k <- apriori(tr20k, parameter = list(support = 0.01, target = "frequent itemsets"))
+rules_for_tr20k <- apriori(tr20k, parameter = list(support = 0.01, conf = 0.85, target = "rules"))
+```
+#### Frequent Itemsets (Tr20k)
+```{r}
+print(inspect(sort(frequent_item_sets_tr20k, decreasing = T, by="count")))
+```
+
+#### Rules (Tr20k)
+```{r}
+print(inspect(sort(rules_for_tr20k, by="confidence")))
+```
+
+### Transactions Equal to 75k (minsup = 0.01, minconf = 0.85)
+```{r}
+tr75k <- read.transactions("tr-75k-canonical.csv", sep = ",")
+frequent_item_sets_tr75k <- apriori(tr75k, parameter = list(support = 0.01, target = "frequent itemsets"))
+rules_for_tr75k <- apriori(tr75k, parameter = list(support = 0.01, conf = 0.85, target = "rules"))
+```
+
+#### Frequent Itemsets (Tr75k)
+```{r}
+print(inspect(sort(frequent_item_sets_tr75k, decreasing = T, by="count")))
+```
+
+#### Rules (Tr75k)
+```{r}
+print(inspect(sort(rules_for_tr75k, by="confidence")))
+```
+
+### Part 2.1(c)
+#### Given the comparison of the rules, it seems like the amount of rules was slightly lower for the 1k dataset.
+#### However, for the other datasets, the number of rules did not differ. Additionally, the rules are suprisingly the same.
+
+### Part 2.1(d)
+#### (i)  {Coffee Eclair}
+#### (ii) {Apple Croissant, Apple Danish, Apple Tart, Cherry Soda}
