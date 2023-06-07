@@ -1,0 +1,170 @@
+---
+title: "Homework 8"
+author: "George Tapia (A20450857)"
+date: "2023-04-24"
+output:
+  html_document:
+    toc: yes
+    df_print: paged
+  html_notebook:
+    toc: yes
+    toc_float: yes
+---
+
+
+### Part 2.1 (a)
+```{r}
+library(keras)
+tensorflow::set_random_seed(1122)
+
+library(dplyr)
+library(caret)
+library(rpart)
+library(rpart.plot)
+
+set.seed(1122)
+options(digits = 2)
+working_directory <- getwd()
+setwd(working_directory)
+
+wifi <- read.csv("wifi_localization.csv", header = TRUE)
+
+wifi$label <- rep(0, nrow(wifi))
+wifi$label[wifi$room == 1] <- 0
+wifi$label[wifi$room == 2] <- 1
+wifi$label[wifi$room == 3] <- 2
+wifi$label[wifi$room == 4] <- 3
+
+wifi$room <- NULL
+number_of_samples <- nrow(wifi)
+
+wifi <- wifi[sample(number_of_samples),]
+
+range_of_samples <- 1:nrow(wifi)
+
+index <- sample(range_of_samples, 0.80 * dim(wifi)[1], replace = FALSE)
+train.df <- wifi[index,]
+test.df <- wifi[-index,]
+
+decision_tree <- rpart(label ~ wifi1 + wifi2 + wifi3 + wifi4, data = train.df, method = "class")
+
+rpart.plot(decision_tree, extra=104, fallen.leaves=T, type=4, main="Wifi Localization Dataset Decision Tree")
+
+predict_results <- predict(decision_tree, test.df, type="class")
+print(confusionMatrix(as.factor(predict_results), as.factor(test.df[, 8])))
+
+```
+### Part 2.1 (b)
+```{r}
+set.seed(1122)
+tensorflow::set_random_seed(1122)
+
+x_train <- select(train.df, -label)
+y_train <- train.df$label
+y_train_one_hot_encoded <- to_categorical(y_train)
+
+
+
+x_test <- select(test.df, -label)
+y_test <- test.df$label
+y_test_one_hot_encoded <- to_categorical(y_test)
+
+model <- keras_model_sequential() %>%
+  layer_dense(units = 1, activation="relu", input_shape=c(7)) %>%
+  layer_dense(units = 4, activation="softmax")
+
+model
+
+model %>% 
+  compile(loss = "categorical_crossentropy", optimizer="adam", metrics=c("accuracy"))
+
+model %>% 
+  fit(data.matrix(x_train), y_train_one_hot_encoded, epochs=100, batch_size=32, validation_split=0.20)
+
+
+predicted_probability <- predict(model, as.matrix(x_test))
+predicted_classes <- apply(predicted_probability, 1, function(x) which.max(x)-1)
+
+result <- model %>% evaluate(as.matrix(x_test), y_test_one_hot_encoded)
+confusion_matrix <- confusionMatrix(as.factor(predicted_classes), as.factor(y_test))
+
+print(confusion_matrix)
+
+print("This is for one neuron in hidden layer")
+print(result)
+
+
+```
+#### (ii) 
+#### The acccuracy is low given the fact that
+#### it is just one neuron. There is not much
+#### of a performance gain with one. Though,
+#### it can still produce good results, by luck.
+
+```{r}
+print(predicted_classes)
+```
+#### (iii) 
+#### The pattern is very rendundant
+#### all of the class labels are the same.
+#### Since the predicted value is far from the actual,
+#### this means that the bias must be high to come up with results like these
+#### (iv) 
+#### Increasing the number of training epochs will not
+#### make any difference since our predictions are coming out the same.
+#### Plus, the network is not as complex so any adjustemts to the number of epochs will output similar results
+
+
+
+### Part 2.1 (c)
+```{r}
+set.seed(1122)
+tensorflow::set_random_seed(1122)
+
+second_model <- keras_model_sequential() %>%
+  layer_dense(units = 8, activation="relu", input_shape=c(7)) %>%
+  layer_dense(units = 4, activation="softmax")
+
+second_model
+
+second_model %>% 
+  compile(loss = "categorical_crossentropy", optimizer="adam", metrics=c("accuracy"))
+
+second_model %>% 
+  fit(data.matrix(x_train), y_train_one_hot_encoded, epochs= 100, batch_size=32, validation_split=0.20)
+
+predicted_probability_2 <- predict(second_model, as.matrix(x_test))
+predicted_classes_2 <- apply(predicted_probability, 1, function(x) which.max(x)-1)
+
+result_2 <- second_model %>% evaluate(as.matrix(x_test), y_test_one_hot_encoded)
+confusion_matrix_2 <- confusionMatrix(as.factor(predicted_classes_2), as.factor(y_test))
+
+print("Best model has 8 neurons in the hidden layer")
+print(result_2)
+
+
+```
+#### (ii) 
+#### After incrementally increasing the number of neurons,
+#### I noticed that at 8 neurons, the neural network was
+#### producing better results. Given this information,
+#### I believe that the bias is just right since
+#### it seems that the network's bias tradeoff is well balanced
+#### at this configuration.
+#### (iii)
+#### I say we should stop at around epoch 98
+#### since the validation and accurracy converged at around this point.
+#### I think this point will minimize over-fitting
+
+### Part 2.1 (d)
+```{r}
+print("Best Neural Network Model")
+print(confusion_matrix_2)
+
+```
+#### (i) 
+#### Looking at the outputs, the neural network performs better in all aspects.
+#### (ii) 
+#### I would deploy the neural network in this case since it has a higher accuracy, and because they
+#### are better suited to create non-linear boundaries. Where as the decision tree will have issues
+#### with performance, in the case of wifi signals.
