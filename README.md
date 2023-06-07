@@ -1,6 +1,6 @@
 # Data-Mining (Machine Learning)
 
-Note: Rmd files contain the code, html files contain the output of the code, the code, and the notes. There are 9 labs I worked on.
+Note: Rmd files contain the code, html files contain the output of the code, the code, and the notes. There are 9 labs I worked on. I also used multiple libraries (tensorflow is one of them).
 
 
 # Data Analysis of Advertising Dataset
@@ -164,3 +164,21 @@ In the next step, the objective was to enhance the model's accuracy by expanding
 The final task was to evaluate the enhanced neural network model, presenting its performance in terms of similar metrics used for the decision tree model. The performance of both models was then compared, and a conclusion was made regarding the preferred model for deployment. This comparison illuminated the respective strengths and weaknesses of decision trees and neural networks when applied to a real-world dataset.
 
 In summary, this assignment bolstered my understanding of neural networks, their implementation in R, and their performance comparison with decision tree models.
+
+
+
+# Advanced Clustering Techniques: K-Means and DBSCAN
+
+### Theory Component
+In this assignment, I answered questions from Tan's book, which concentrated on the fundamentals and algorithms of cluster analysis. The questions were primarily focused on distance and similarity measures, hierarchical and density-based clustering, and K-means. It helped reinforce my understanding of the clustering concepts and their real-world applications.
+
+### Data Preprocessing
+I worked with the HARTIGAN dataset (file19.txt), which is a multivariate mammal dataset with 66 rows and 9 columns. I performed data cleaning operations such as removal of specific attributes, multiple spaces, standardization, and conversion of the delimiter to a comma. This part of the assignment emphasized the importance of clean and well-prepared data before applying any clustering algorithm.
+
+### K-Means Clustering Implementation and Analysis
+I conducted K-means clustering on the HARTIGAN dataset. The process included determining the optimal number of clusters using the WSS or Silhouette graph, running K-means clustering, and analyzing the clusters using various metrics such as SSE. A detailed examination of each cluster helped understand how the mammals were grouped together, leading to fascinating insights about the animal kingdom and the efficiency of K-means clustering.
+
+### DBSCAN Clustering
+This assignment also required applying the DBSCAN clustering algorithm on the dataset s1.csv, which contains 5,000 observations of two dimensions. The tasks included plotting the dataset, deciding on the optimal number of clusters using the K-means algorithm for comparison, performing DBSCAN clustering, and determining appropriate parameters for MinPts and epsilon. Analyzing the DBSCAN results in comparison to K-means clustering shed light on the advantages and disadvantages of both clustering techniques.
+
+Overall, this assignment provided an in-depth understanding of advanced clustering techniques and their practical application on real-world datasets. It further reinforced my comprehension of data preparation and clustering-based data analysis.
