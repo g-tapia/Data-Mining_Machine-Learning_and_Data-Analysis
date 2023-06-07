@@ -142,3 +142,25 @@ After building the Perceptron model, I used it to make predictions and evaluated
 To better interpret the model, I created visualizations to illustrate the Perceptron's decision boundary in the feature space. This provided valuable insights into the model's decision-making process and the impact of the weight updates throughout the learning phase.
 
 In conclusion, through this assignment, I gained a solid understanding of the Perceptron algorithm, its implementation details, and performance tuning. I now appreciate the importance of setting appropriate learning rates and iteration steps and how these affect the model's performance and learning quality.
+
+# Neural Network Implementation and Optimization
+
+### Theoretical Understanding
+This assignment concentrated on theoretical and practical facets of neural networks. The theoretical part offered questions about neural network architecture, error computation, backpropagation, and weight adjustments. It also delved into the bias-variance trade-off concept. These exercises helped deepen my understanding of neural networks and their mathematical basis.
+
+### Data Preprocessing
+The assignment required handling the 'wifi_localization.csv' dataset, encompassing signals from seven WiFi access points for predicting a user's location among four rooms. This dataset was divided into a training set (80%) and a test set (20%), forming the basis for the modeling tasks.
+
+### Decision Tree Baseline Model
+To set a performance benchmark, a decision tree was first trained on the dataset and evaluated on the test data. The performance of the decision tree model was assessed via a confusion matrix, looking at overall accuracy, sensitivity, specificity, and positive predictive value for each class. This part of the assignment emphasized my understanding of decision tree models and how to interpret confusion matrices.
+
+### Single-Neuron Hidden Layer Neural Network
+Following the decision tree model, a basic neural network with a single neuron in the hidden layer was implemented. The hidden layer employed the ReLU activation function, and the output layer used softmax. After training the model for 100 epochs, its performance was gauged using the test data. The model's effectiveness was primarily evaluated based on loss and accuracy metrics.
+
+### Optimized Neural Network with Variable Neurons in Hidden Layer
+In the next step, the objective was to enhance the model's accuracy by expanding the number of neurons in the hidden layer. This step involved iterative training and assessment of the model until the accuracy reached high levels. This task illustrated the importance of the number of neurons in a hidden layer for a neural network's performance.
+
+### Model Evaluation and Comparison
+The final task was to evaluate the enhanced neural network model, presenting its performance in terms of similar metrics used for the decision tree model. The performance of both models was then compared, and a conclusion was made regarding the preferred model for deployment. This comparison illuminated the respective strengths and weaknesses of decision trees and neural networks when applied to a real-world dataset.
+
+In summary, this assignment bolstered my understanding of neural networks, their implementation in R, and their performance comparison with decision tree models.
