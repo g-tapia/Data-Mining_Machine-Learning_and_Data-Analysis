@@ -122,3 +122,23 @@ The main part of the assignment involved finding association rules that associat
 The last part of the assignment required comparing the rules obtained for different subsets of transactions and analyzing how the number of transactions impacts the results. Additionally, for the 75,000 transactions dataset, I had to identify the most and least frequently purchased item or itemset. These tasks allowed me to reflect on the influence of data size on results and to draw meaningful insights from the data.
 
 Through these practical tasks, this assignment solidified my understanding of association rule mining and its application in analyzing transaction data. I gained experience in transforming data, using the arules package in R for mining association rules, and interpreting these rules for actionable insights.
+
+
+# Implementing Perceptron in R
+
+### Understanding Perceptron
+In this assignment, I deepened my understanding of the Perceptron, a fundamental machine learning algorithm for binary classification problems. I studied how the algorithm uses a linear predictor function based on a set of weights that get updated as the model learns from the training data.
+
+### Implementation of Perceptron in R
+The heart of the assignment was to manually implement the Perceptron algorithm in R. I developed a function that initializes random weights, iterates over the training data, and updates the weights whenever it encounters a misclassified instance. The implementation also included a parameter for the learning rate, which modulates the magnitude of the weight updates. This exercise was fundamental to my understanding of how Perceptron works and its implementation details.
+
+### Setting Learning Rate and Steps
+Choosing the right learning rate was crucial in this assignment as it directly influences the speed and quality of learning. Similarly, I had to set an appropriate number of steps or iterations over the dataset for the Perceptron to converge to an optimal solution. This task honed my skills in hyperparameter tuning and understanding its impact on the model's performance.
+
+### Model Evaluation
+After building the Perceptron model, I used it to make predictions and evaluated its performance using a set of appropriate metrics. These included accuracy, precision, recall, and F1-score. The evaluation helped me comprehend the real-world performance of the Perceptron model and the implications of the chosen hyperparameters.
+
+### Visualization
+To better interpret the model, I created visualizations to illustrate the Perceptron's decision boundary in the feature space. This provided valuable insights into the model's decision-making process and the impact of the weight updates throughout the learning phase.
+
+In conclusion, through this assignment, I gained a solid understanding of the Perceptron algorithm, its implementation details, and performance tuning. I now appreciate the importance of setting appropriate learning rates and iteration steps and how these affect the model's performance and learning quality.
