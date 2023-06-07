@@ -1,0 +1,215 @@
+---
+title: "Homework 9"
+author: "George Tapia (A20450857)"
+date: "2023-05-01"
+output:
+  html_document:
+    toc: yes
+    df_print: paged
+  html_notebook:
+    toc: yes
+    toc_float: yes
+---
+
+### Part 2.1 (a)
+
+#### (i) 
+#### We should remove the name before we do clustering since this value is unique,
+#### it will not provide us with any useful insights
+#### After looking at the dataset, I noticed that, top canines (C) and bottom canines (c)
+#### had similar values. I double checked by using a correlation plot.
+#### since the two attributes are highly correlated. If we use both of them, this can lead us
+#### to less reliable statistical inferences so it is best to remove one.
+#### I will remove the bottom canine attribute (random choice- both are similar)
+
+#### (ii)
+#### Given that all the features don't have a significant difference, in terms of scale,
+#### we do not need to standardize the data
+
+#### (iii) (below, done through code)
+```{r}
+library(factoextra)
+library(corrplot)
+working_directory <- getwd()
+setwd(working_directory)
+mammals_old <- read.table("file19.txt", header = TRUE, skip = 20)
+
+
+# the tooth pattern
+#
+#(I) the number of top incisors,
+#(i) bottom incisors, 
+#(C) top canines, 
+#(c) bottom canines, 
+#(P) top premolars, 
+#(p) bottom premolars, 
+#(M) top molars
+#(m) bottom molars.
+
+correlation_matrix <- cor(mammals_old[2:9])
+corrplot(correlation_matrix, method = "color", type = "upper", order = "hclust", addCoef.col = "black", tl.col = "black", tl.srt = 45)
+
+
+mammals <- mammals_old[,-c(5)]
+print(mammals)
+
+```
+
+### Part 2.1 (b) (REMOVED ATTRIBUTE - BOTTOM CANINES (c))
+#### (i) Using the silhoutte method, we were able to determine that the 
+####  optimal number of clusters is 8. This means that each
+####  number of cluster's were evaluated to determine the number
+####  that gave the best results, with respect to how well they were clustered.
+```{r}
+fviz_nbclust(mammals[,-1], kmeans, method = "silhouette")
+```
+
+
+
+#### (ii)
+```{r}
+km.mammals <- kmeans(mammals[,-1], 8, nstart = 10)
+fviz_cluster(km.mammals, mammals[,-1])
+```
+
+#### (iii) 1, 9, 12, 7, 8, 11, 10, 8  (respectively)
+```{r}
+cluster_one <- mammals[which(km.mammals$cluster == 1),]
+cluster_two <- mammals[which(km.mammals$cluster == 2),]
+cluster_three <- mammals[which(km.mammals$cluster == 3),]
+cluster_four <- mammals[which(km.mammals$cluster == 4),]
+cluster_five <- mammals[which(km.mammals$cluster == 5),]
+cluster_six <- mammals[which(km.mammals$cluster == 6),]
+cluster_seven <- mammals[which(km.mammals$cluster == 7),]
+cluster_eight <- mammals[which(km.mammals$cluster == 8),]
+
+cat(" Number of observations in Cluster 1: ", nrow(cluster_one), "\n",
+    "Number of observations in Cluster 2: ", nrow(cluster_two), "\n",
+    "Number of observations in Cluster 3: ", nrow(cluster_three), "\n",
+    "Number of observations in Cluster 4: ", nrow(cluster_four), "\n",
+    "Number of observations in Cluster 5: ", nrow(cluster_five), "\n",
+    "Number of observations in Cluster 6: ", nrow(cluster_six), "\n",
+    "Number of observations in Cluster 7: ", nrow(cluster_seven), "\n",
+    "Number of observations in Cluster 8: ", nrow(cluster_eight), "\n")
+
+
+```
+
+#### (iv) 551.94
+```{r}
+km.mammals <- kmeans(mammals[,-1], 8, nstart = 10)
+print("Total SSE:")
+print(km.mammals$totss)
+```
+
+#### (v) 0 15.55  8.83 17.71  6.38  5.45  5.7  3.88 (respectively)
+```{r}
+
+print(km.mammals)
+
+```
+
+#### (vi)
+#### Cluster 1: Only one animal so can't really deduce anything from this cluster yet.
+#### However, armadillos have no canines, after research, so it can be meaningful.
+```{r}
+print(cluster_one[, 1])
+```
+#### Cluster 2: All of these animals are ugly and creepy, except for the bear.
+#### All share a similar characteristic. They all have a lot of fur.
+```{r}
+print(cluster_two[, 1])
+```
+#### Cluster 3: Several of these animals are fast, and use their senses to hunt their prey
+```{r}
+print(cluster_three[, 1])
+```
+#### Cluster 4: martens, fishers, and wolverines are predators that feed on smaller mammals and bird,
+#### while fur seals, sea lions, walruses, and elephant seals primarily consume fish 
+#### and other marine animals. This cluster is meh.
+```{r}
+print(cluster_four[, 1])
+```
+#### Cluster 5: most of these animals are bats so this is a great grouping
+```{r}
+print(cluster_five[, 1])
+```
+#### Cluster 6: The majority of these animals are rodents so this is a good cluster as well
+```{r}
+print(cluster_six[, 1])
+```
+#### Cluster 7: All of the animals, except one, are Ungulates.
+#### Ungulates are characterized by their hooved feet, which typically have an even or odd number of toes.
+#### Coyotes are not ungulates, but they share a common habitat with many ungulates.
+#### Great grouping!
+```{r}
+print(cluster_seven[, 1])
+```
+#### Cluster 8: Most of these are rodents so this is a good grouping as well
+```{r}
+print(cluster_eight[, 1])
+```
+
+#### In summary, Cluster 1 consists of a single animal, the armadillo, which is notable for its lack of 
+#### canines, making it an interesting case. Cluster 2 is made up of animals with abundant fur, although they
+#### vary in species and are subjectively seen as "ugly and creepy" with the exception of the bear. Cluster 3
+#### contains several swift animals that rely on their senses while hunting. Cluster 4 encompasses both land
+#### predators and marine mammals. Cluster 5 predominantly includes bats,
+#### demonstrating a cohesive grouping. Clusters 6 and 8 mostly consist of rodents, indicating appropriate
+#### groupings. Cluster 7 is largely made up of ungulates, with the exception of the coyote, which inhabits
+#### similar environments as many ungulates. Overall, great findings!
+
+
+### Part 2.2 
+#### (a) I looked at the dataset. Since I can't tell what the attributes are, it would be best
+#### to scale the data to prevent any distortion.
+```{r}
+library(dbscan)
+library(fpc)
+s1 <- read.csv("s1.csv", header = TRUE)
+s1.scaled <- scale(s1)
+
+
+```
+
+#### (b)(i - ii)
+#### I see 15 notable clusters from the chart. Though, all of them are not well seperated (only one).
+```{r}
+plot(s1, main="Raw points")
+```
+
+
+
+#### (c)(i - iii)
+#### I would only used 15 clusters since the plot "Raw points" shows 15 distinguishable clusters.
+#### The plot shows me that 15 clusters will be a good classification pattern to analyze for insights.
+```{r}
+fviz_nbclust(s1.scaled, kmeans, method = "wss", k.max = 20)  + geom_vline(xintercept = 4, linetype = 2)
+```
+
+```{r}
+fviz_nbclust(s1.scaled, kmeans, method = "silhouette", k.max = 20)
+```
+
+#### (d)(i)
+#### (ii) I think the clustering is great since we have 15 clusters.
+#### All the data looks clustered in a good way that will give us valuable insights.
+```{r}
+km.s1.scaled <- kmeans(s1.scaled, 15, nstart = 10)
+fviz_cluster(km.s1.scaled, s1)
+```
+
+#### (e) 
+```{r}
+
+kNNdistplot(s1.scaled, k = 8) 
+
+dbscan.s1.scaled <- fpc::dbscan(s1.scaled, eps = 0.095, MinPts = 8)
+fviz_cluster(dbscan.s1.scaled, s1, stand = FALSE, ellipse = F, geom = "point")
+
+```
+
+#### (i)
+#### a value of 8 would be best becuase the clusters look more dense.
+#### (ii) 
+#### At minPts = 8, eps = 0.095, there are 15 clusters.
