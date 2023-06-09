@@ -4,7 +4,7 @@ Note: Rmd files contain the code, html files contain the output, the code, and t
 
 Feel free to read an article I wrote above. I used overleaf to format it. Though, it did take me a long time to write it since I had to do extensive research, make the tables myself, and get familiar with overleaf. 
 
-I Wasn't able to write more articles due to the fact that I was going the extra mile on my homework and wasting more time than I needed to. Still, I am happy with what I wrote. I did way more work than the graduate students in my class. 
+I wasn't able to write more articles due to the fact that I was going the extra mile on my homework and wasting more time than I needed to. Still, I am happy with what I wrote. I did way more work than the graduate students in my class. 
 
 I wrote the article voluntarily. I will post the other article in the next few days. 
 
