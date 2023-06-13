@@ -1,13 +1,12 @@
 # Data-Mining (Machine Learning)
 
-Note: Rmd files contain the code, html files contain the output, the code, and the notes. There are 9 labs I worked on. I also used multiple libraries (tensorflow is one of them).
+This repository contains my work from several labs. The Rmd files contain the code, html files contain the output, the code, and the notes. There are 9 labs I worked on.
 
-Feel free to read an article I wrote above. I used overleaf to format it. Though, it did take me a long time to write it since I had to do extensive research, make the tables myself, and get familiar with overleaf. 
+In addition to the lab work, I've also included an article that I wrote. You can find it in the files above. It was a bit of a time-consuming article to write. I used Overleaf for the formatting and spent a lot of time researching, creating tables, and getting used to the Overleaf environment.
 
-I wasn't able to write more articles due to the fact that I was going the extra mile on my homework and wasting more time than I needed to. Still, I am happy with what I wrote. I did way more work than the graduate students in my class. 
+I would have loved to write more articles, but, man, homework sure did take up a lot of my time! I really went above and beyond with it. But despite the effort, I'm really proud of what I managed to create. I even ended up doing more work than the grad students in my class.
 
-I wrote the article voluntarily. I will post the other article in the next few days. 
-
+It's worth noting that I wrote the article on my own accord. I was very passionate about understanding every single detail from each topic covered.
 
 # Data Analysis of Advertising Dataset
 
