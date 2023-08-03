@@ -9,18 +9,18 @@ I would have loved to write more articles, but, man, homework sure did take up a
 It's worth noting that I wrote the article on my own accord. I was very passionate about understanding every single detail of each topic covered.
 
 # Table of Contents
-2. [Data Analysis of Advertising Dataset](#data-analysis)
-3. [Multivariate Linear Regression](#multivariate-regression)
-4. [Decision Tree Classification (Hotels Dataset)](#decision-tree)
-5. [Advanced Decision Trees (US Census Dataset)](#advanced-trees)
-6. [Association Rule Mining (Bakery dataset)](#association-rule)
-7. [Implementing Perceptron in R](#perceptron)
-8. [Neural Network Implementation and Optimization](#neural-network)
-9. [Advanced Clustering Techniques: K-Means and DBSCAN](#clustering)
+1. [Data Analysis of Advertising Dataset](#data-analysis-of-advertising-dataset)
+2. [Multivariate Linear Regression](#multivariate-linear-regression)
+3. [Decision Tree Classification (Hotels Dataset)](#decision-tree-classification-hotels-dataset)
+4. [Advanced Decision Trees (US Census Dataset)](#advanced-decision-trees-us-census-dataset)
+5. [Association Rule Mining (Bakery dataset)](#association-rule-mining-bakery-dataset)
+6. [Implementing Perceptron in R](#implementing-perceptron-in-r)
+7. [Neural Network Implementation and Optimization](#neural-network-implementation-and-optimization)
+8. [Advanced Clustering Techniques: K-Means and DBSCAN](#advanced-clustering-techniques-k-means-and-dbscan)
+
 
 
 # Data Analysis of Advertising Dataset
-<a name="data-analysis"></a>
 In this analysis, I explored and analyzed an advertising dataset that contained sales data across 200 different markets and advertising budgets allocated for three media channels - TV, Radio, and Newspaper.
 
 1. **Data Manipulation and Visualization:** I started the analysis by importing the dataset into a dataframe and performing initial data manipulations, such as printing specific rows and columns. To visualize the relationship between sales and each advertising channel, I created scatter plots for sales versus TV, radio, and newspaper advertising budgets.
