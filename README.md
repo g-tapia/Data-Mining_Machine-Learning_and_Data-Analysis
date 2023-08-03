@@ -18,6 +18,7 @@ It's worth noting that I wrote the article on my own accord. I was very passiona
 8. [Neural Network Implementation and Optimization](#neural-network)
 9. [Advanced Clustering Techniques: K-Means and DBSCAN](#clustering)
 
+<a name="data-analysis"></a>
 # Data Analysis of Advertising Dataset
 
 In this analysis, I explored and analyzed an advertising dataset that contained sales data across 200 different markets and advertising budgets allocated for three media channels - TV, Radio, and Newspaper.
