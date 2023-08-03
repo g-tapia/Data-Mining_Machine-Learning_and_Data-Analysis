@@ -18,9 +18,9 @@ It's worth noting that I wrote the article on my own accord. I was very passiona
 8. [Neural Network Implementation and Optimization](#neural-network)
 9. [Advanced Clustering Techniques: K-Means and DBSCAN](#clustering)
 
-<a name="data-analysis"></a>
-# Data Analysis of Advertising Dataset
 
+# Data Analysis of Advertising Dataset
+<a name="data-analysis"></a>
 In this analysis, I explored and analyzed an advertising dataset that contained sales data across 200 different markets and advertising budgets allocated for three media channels - TV, Radio, and Newspaper.
 
 1. **Data Manipulation and Visualization:** I started the analysis by importing the dataset into a dataframe and performing initial data manipulations, such as printing specific rows and columns. To visualize the relationship between sales and each advertising channel, I created scatter plots for sales versus TV, radio, and newspaper advertising budgets.
