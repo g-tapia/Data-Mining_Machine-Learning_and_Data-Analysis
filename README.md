@@ -1,12 +1,22 @@
 # Data-Mining (Machine Learning)
 
-This repository contains my work from several labs. The Rmd files contain the code, html files contain the output, the code, and the notes. There are 9 labs I worked on.
+This repository contains the labs from my Data Mining course. The Rmd files contain only the code. The html files contain the output, the code, and the notes. There are 9 labs I worked on.
 
 In addition to the lab work, I've also included an article that I wrote. You can find it in the files above. It was a bit of a time-consuming article to write. I used Overleaf for the formatting and spent a lot of time researching, creating tables, and getting used to the Overleaf environment.
 
-I would have loved to write more articles, but, man, homework sure did take up a lot of my time! I really went above and beyond with it. But despite the effort, I'm really proud of what I managed to create. I even ended up doing more work than the grad students in my class.
+I would have loved to write more articles, but, man, homework sure did take up a lot of my time! I really went above and beyond with it. But despite the effort, I'm really proud of what I managed to create. I was told that "I ended up doing more work than the grad students in my class".
 
-It's worth noting that I wrote the article on my own accord. I was very passionate about understanding every single detail from each topic covered.
+It's worth noting that I wrote the article on my own accord. I was very passionate about understanding every single detail of each topic covered.
+
+# Table of Contents
+2. [Data Analysis of Advertising Dataset](#data-analysis)
+3. [Multivariate Linear Regression](#multivariate-regression)
+4. [Decision Tree Classification (Hotels Dataset)](#decision-tree)
+5. [Advanced Decision Trees (US Census Dataset)](#advanced-trees)
+6. [Association Rule Mining (Bakery dataset)](#association-rule)
+7. [Implementing Perceptron in R](#perceptron)
+8. [Neural Network Implementation and Optimization](#neural-network)
+9. [Advanced Clustering Techniques: K-Means and DBSCAN](#clustering)
 
 # Data Analysis of Advertising Dataset
 
